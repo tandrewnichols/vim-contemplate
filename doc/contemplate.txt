@@ -1,0 +1,177 @@
+*contemplate.txt* Scaffolding meets snippet expansion
+
+INTRODUCTION                                     *contemplate*
+
+Autocommand scaffolding similar to vim's skeleton feature, but with snippet
+expansion
+
+CONTENTS                                         *contemplate-contents*
+
+  1.  Overview                                   |contemplate-overview|
+  2.  Requirements                               |contemplate-requirements|
+  3.  Installation                               |contemplate-installation|
+  4.  Usage                                      |contemplate-usage|
+  5.  Commands                                   |contemplate-commands|
+  6.  Options                                    |contemplate-options|
+  7.  Issues                                     |contemplate-issues|
+  8.  Contributing                               |contemplate-contributing|
+  9.  Version                                    |contemplate-version|
+  10. License                                    |contemplate-license|
+
+OVERVIEW                                         *contemplate-overview*
+
+This is a scaffolding/templating plugin similar in concept to vim's |skeleton|
+feature. You can use it to automatically populate files with templates you
+designate, but here's what makes this unique: those templates can include
+|UltiSnips| tabstops (and other features), which makes generating a new file
+quick and easy. You can also trigger this scaffolding manually via the
+|Contemplate| command.
+
+REQUIREMENTS                                     *contemplate-requirements*
+
+Requires Vim to be compiled with the |lambda| feature (use `has('lambda')` to
+check). Additionally require the UltiSnips plugin to be installed.
+
+INSTALLATION                                     *contemplate-installation*
+
+  1. Manual
+
+     Clone this repository and copy the files in plugin/, autoload/, and doc/
+     to their respective directories in your vimfiles, or copy the text from
+     the github repository into new files in those directories. Make sure to
+     run `:helptags`.
+
+  2. Plug <https://github.com/junegunn/vim-plug>
+
+     Add the following to your vimrc, or something sourced therein: >
+
+     Plug 'SirVer/ultisnips'
+     Plug 'tandrewnichols/vim-contemplate'
+<
+     Then install via `:PlugInstall`
+
+  3. Vundle <https://github.com/gmarik/Vundle.vim>
+
+     Add the following to your vimrc, or something sourced therein: >
+
+     Plugin 'tandrewnichols/vim-contemplate'
+     Plugin 'SirVer/ultisnips'
+<
+     Then install via `:BundleInstall`
+
+  4. NeoBundle <https://github.com/Shougo/neobundle.vim>
+
+     Add the following to your vimrc, or something sourced therein: >
+
+     NeoBundle 'tandrewnichols/vim-contemplate'
+     NeoBundle 'SirVer/ultisnips'
+<
+     Then install via `:BundleInstall`
+
+  5. Pathogen <https://github.com/tpope/vim-pathogen> >
+
+     cd ~/.vim/bundle
+     git clone https://github.com/SirVer/ultisnips.git
+     git clone https://github.com/tandrewnichols/vim-contemplate.git
+<
+     Then run `:Helptags`
+
+USAGE                                            *contemplate-usage*
+
+Templates should be created in `$HOME/.vim/skeletons` by filetype (but see
+|g:contemplate_skeleton_dir| for configuring this). That is, javascript
+templates should be placed in `$HOME/.vim/skeletons/javascript` and ruby
+templates should be placed in `$HOME/.vim/skeletons/ruby`. The file names
+therein (ignoring extensions) are the template identifiers used in prompts,
+autocommands, and tab completion. You can trigger templates manually using the
+|Contemplate| command (with or without other file contents). You can also set
+up autocommand (i.e. |BufNew|) templating via the |g:contemplate_autoscaffold|
+option.
+
+Once a template has been populated in a buffer, you'll be in insert mode with
+the `<Tab>` key mapped to jump to tabstops, just like regular snippet
+expansion via UltiSnips. See the |UltiSnips| documention for a full feature
+rundown of the kind of templating options available. None of that is handled
+by this plugin. Once the template is populated in the buffer, UltiSnips just
+does it's normal thing.
+
+COMMANDS                                         *contemplate-commands*
+
+                                                 *contemplate-:Contemplate*
+ :Contemplate [template] [filetype]              
+ :Contemplate [filetype] [template]
+
+ Populates the current buffer with the template found at
+ `$HOME/.vim/skeletons/[filetype]/[template]` (extension doesn't matter).
+ Both arguments are optional and can be supplied in any order. Tab completion
+ works for both in conjunction (although it might get weird if you name one of
+ your template an actual filetype. Like if you have a javascript template
+ called "ruby," tab completion might be . . . unpredictable. If you don't
+ supply filetype, the current buffer |filetype| will be used (see |setf|). If
+ the current buffer doesn't have a filetype, you'll be prompted to choose one
+ from the directories inside `$HOME/.vim/skeletons` that contain a file named
+ `[template]`. That is, `:Contemplate component` with no local filetype set
+ will search for templates named `component` inside any filetype folder and
+ present you with the filetypes it finds. So if you have both
+ `javascript/component` and `html/component`, you 'll be prompted to choose
+ between `javascript` and `html`. If you don't supply a template name, you'll
+ be prompted to choose from those available inside the filetype you supplied
+ or chose or the one detected in the buffer. Basically, you can't make this do
+ the wrong thing unless you explicitly type out a filetype for which you don't
+ have any templates or type out a template that doesn't exist. But don't do
+ those things.
+
+OPTIONS                                          *contemplate-options*
+
+                                                 *contemplate_skeleton_dir*
+ The directory to search for templates. Defaults to `$HOME/.vim/skeletons`.
+
+                                                 *contemplate_autoscaffold*
+ A dict where the keys are autocommand patterns (see |autocmd-patterns|) and
+ the values are the corresponding templates to load. For example: >
+
+ let g:contemplate_autoscaffold = {
+   \   'component.js': 'component',
+   \   'src/app/components/*.js': 'component'
+   \ }
+<
+ISSUES                                           *contemplate-issues*
+
+If you experience issues using vim-contemplate, please report them at
+<https://github.com/tandrewnichols/vim-contemplate/issues>.
+
+CONTRIBUTING                                     *contemplate-contributing*
+
+I always try to be open to suggestions, but I do still have opinions about what
+this should and should not be so . . . it never hurts to ask before investing a
+lot of time on a patch.
+
+VERSION                                          *contemplate-version*
+
+Version 1.0.0
+
+LICENSE                                          *contemplate-license*
+
+The MIT License (MIT)
+
+Copyright (c) 2019 Andrew Nichols
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
+so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+vim:tw=78:ts=2:ft=help:norl:
