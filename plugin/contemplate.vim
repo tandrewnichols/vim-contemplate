@@ -11,7 +11,7 @@ if !empty(g:contemplate_autoscaffold)
   augroup ContemplateAutoscaffold
     au!
     for [pattern, skeleton] in items(g:contemplate_autoscaffold)
-      exec "au BufNewFile " . pattern . " call contemplate#expand('" . skeleton . "')"
+      exec "au BufNewFile " . pattern . " au! ContemplateAutoscaffold BufWinEnter <buffer> call contemplate#expand('" . skeleton . "')"
     endfor
   augroup END
 endif
