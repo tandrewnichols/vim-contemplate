@@ -82,11 +82,7 @@ function! contemplate#expand(...) abort
 
   let contents = readfile(skeleton)
   let joined = join(contents, "\n")
-  if contemplate#containsSnippets(joined)
-    call UltiSnips#Anon(joined)
-  else
-    call append(getline('.'), contents)
-  endif
+  call UltiSnips#Anon(joined)
 
   if empty(&ft)
     let &ft = ft
@@ -102,10 +98,6 @@ function! contemplate#candidates(ft, ...) abort
   endfor
 
   return files
-endfunction
-
-function! contemplate#containsSnippets(contents) abort
-  return match(a:contents, '${\d') > -1
 endfunction
 
 function! contemplate#glob(subpath) abort
