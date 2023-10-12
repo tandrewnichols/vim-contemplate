@@ -72,8 +72,15 @@ function! contemplate#expand(...) abort
       return
     endif
 
-    let skeleton = contemplate#prompt(candidates, 'Choose skeleton:', 0)
-    redraw
+    " Try to find exact match in the case that one skeleton name begins with the entirety of another
+    let exactMatch = reduce(candidates, { acc, val -> split(split(val, '/')[-1], '\.')[0] == type ? val : acc})
+
+    if !empty(exactMatch)
+      let skeleton = exactMatch
+    else
+      let skeleton = contemplate#prompt(candidates, 'Choose skeleton:', 0)
+      redraw
+    endif
   endif
 
   if empty(skeleton)
